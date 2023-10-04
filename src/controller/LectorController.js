@@ -2,12 +2,16 @@ import { conn } from "../connection.js";
 import colors from "colors";
 
 export const getProd = async (req, res) => {
-    const bd = await conn();
-    const [consult] = await bd.query(
-      "SELECT s.codigo, s.descrip, FLOOR(s.existencia) AS existencia, ROUND(p.precio1, 2) AS precio1 FROM calternos c JOIN sinv s ON c.cpadre = s.codigo JOIN detallepr p ON s.codigo = p.codigo WHERE c.chijo = ?",
-      [req.params.chijo]
-    );
-    res.status(200).json(consult);
+    try{
+        const bd = await conn();
+        const [consult] = await bd.query(
+          "SELECT s.codigo, s.descrip, FLOOR(s.existencia) AS existencia, ROUND(p.precio1, 2) AS precio1 FROM calternos c JOIN sinv s ON c.cpadre = s.codigo JOIN detallepr p ON s.codigo = p.codigo WHERE c.chijo = ?",
+          [req.params.chijo]
+        );
+        res.status(200).json(consult);
+    }catch(err){
+        console.log('Error: ', err)
+    }
 }
 
 export const postProduct = async (req, res) => {
